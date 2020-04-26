@@ -128,13 +128,32 @@ public class ModuleStatusView extends View {
     private void setupModuleRectangles() {
         mModuleRectangles =new Rect[mModuleStatus.length];
         for (int moduleIndex = 0; moduleIndex< mModuleRectangles.length; moduleIndex++){
-            int x=(int) (moduleIndex*(mShapeSize + mSpacing));
-            int y= 0;
+            int x=getPaddingLeft()+ (int) (moduleIndex*(mShapeSize + mSpacing));
+            int y= getPaddingTop();
             mModuleRectangles[moduleIndex]=new Rect(x,y, x+(int) mShapeSize, y+(int) mShapeSize);
         }
     }
 
 //    private void invalidateTextPaintAndMeasurements() {
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int desiredWidth=0;
+        int desiredHeight=0;
+
+
+        desiredWidth=(int)((mModuleStatus.length*(mShapeSize+mSpacing))-mSpacing);
+        desiredWidth+=getPaddingLeft()+getPaddingRight();
+
+
+        desiredHeight=(int)mShapeSize;
+        desiredHeight+=getPaddingTop()+getPaddingBottom();
+
+        int width=resolveSizeAndState(desiredWidth,widthMeasureSpec, 0);
+        int height=resolveSizeAndState(desiredHeight,heightMeasureSpec,0);
+
+        setMeasuredDimension(width,height);
+    }
 //        mTextPaint.setTextSize(mExampleDimension);
 //        mTextPaint.setColor(mExampleColor);
 //        mTextWidth = mTextPaint.measureText(mExampleString);
