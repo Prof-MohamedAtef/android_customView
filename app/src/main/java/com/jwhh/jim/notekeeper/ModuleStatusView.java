@@ -31,6 +31,7 @@ public class ModuleStatusView extends View {
     private Paint mPaintFill;
     private float mRadius;
     private int EDIT__MODE_MODULE_COUNT=7;
+    private int mMaxHorizontalModules;
 
     public boolean[] getModuleStatus() {
         return mModuleStatus;
@@ -55,6 +56,11 @@ public class ModuleStatusView extends View {
         init(attrs, defStyle);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        setupModuleRectangles(w);
+    }
+
     private void init(AttributeSet attrs, int defStyle) {
 
         if (isInEditMode()){
@@ -72,7 +78,7 @@ public class ModuleStatusView extends View {
         mSpacing =30f;
         mRadius= (mShapeSize-mOutLineWidth) / 2;
 
-        setupModuleRectangles();
+
 
         mOutlineColor=Color.BLACK;
         mPaintOutline=new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -125,11 +131,19 @@ public class ModuleStatusView extends View {
         setModuleStatus(exampleModuleValues);
     }
 
-    private void setupModuleRectangles() {
+    private void setupModuleRectangles(int width) {
+
+        int availableWidth=width-getPaddingLeft()-getPaddingRight();
+        int horizontalModulesThatCanFit=(int)(availableWidth/(mShapeSize+mSpacing));
+        int maxHorizontalModules=Math.min(horizontalModulesThatCanFit,mModuleStatus.length);
+
+
         mModuleRectangles =new Rect[mModuleStatus.length];
         for (int moduleIndex = 0; moduleIndex< mModuleRectangles.length; moduleIndex++){
-            int x=getPaddingLeft()+ (int) (moduleIndex*(mShapeSize + mSpacing));
-            int y= getPaddingTop();
+            int column =moduleIndex%maxHorizontalModules;
+            int row=moduleIndex/maxHorizontalModules;
+            int x=getPaddingLeft()+ (int) (column*(mShapeSize + mSpacing));
+            int y= getPaddingTop()+(int) (row*(mShapeSize + mSpacing));
             mModuleRectangles[moduleIndex]=new Rect(x,y, x+(int) mShapeSize, y+(int) mShapeSize);
         }
     }
@@ -141,12 +155,20 @@ public class ModuleStatusView extends View {
         int desiredWidth=0;
         int desiredHeight=0;
 
+        int specWidth= MeasureSpec.getSize(widthMeasureSpec);
+        int availableWidth= specWidth-getPaddingLeft()-getPaddingRight();
+        int horizontalModulesThatCanFit= (int)(availableWidth/(mShapeSize+mSpacing));
+        mMaxHorizontalModules= Math.min(horizontalModulesThatCanFit,mModuleStatus.length);
 
-        desiredWidth=(int)((mModuleStatus.length*(mShapeSize+mSpacing))-mSpacing);
+
+
+        desiredWidth=(int)((mMaxHorizontalModules*(mShapeSize+mSpacing))-mSpacing);
         desiredWidth+=getPaddingLeft()+getPaddingRight();
 
+        //calculate height
+        int rows =( (mModuleStatus.length-1)/mMaxHorizontalModules) +1;
 
-        desiredHeight=(int)mShapeSize;
+        desiredHeight=(int)((rows*(mShapeSize+mSpacing))-mSpacing);
         desiredHeight+=getPaddingTop()+getPaddingBottom();
 
         int width=resolveSizeAndState(desiredWidth,widthMeasureSpec, 0);

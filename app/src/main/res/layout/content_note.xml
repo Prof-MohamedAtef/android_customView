@@ -66,10 +66,13 @@
         app:layout_constraintTop_toBottomOf="@+id/text_note_title"/>
 
     <view
-        android:id="@+id/view2"
+        android:id="@+id/module_status"
         class="com.jwhh.jim.notekeeper.ModuleStatusView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/text_note_text"
         app:layout_constraintStart_toStartOf="@+id/text_note_text"
         app:layout_constraintTop_toBottomOf="@+id/text_note_text" />
 
