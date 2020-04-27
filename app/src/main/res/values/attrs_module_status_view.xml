@@ -4,5 +4,14 @@
         <attr name="exampleDimension" format="dimension" />
         <attr name="exampleColor" format="color" />
         <attr name="exampleDrawable" format="color|reference" />
+        <attr name="OutlineColor" format="color"/>
+        <attr name="circle" format="enum">
+            <enum name="circle" value="0"/>
+            <enum name="square" value="1"/>
+        </attr>
+
+        <attr name="outlineWidth" format="dimension"/>
+
+
     </declare-styleable>
 </resources>
